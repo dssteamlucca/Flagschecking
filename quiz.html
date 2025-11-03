@@ -23,7 +23,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         #card-header {
-            background-color: #DDEEFF; /* Azzurro Pastello */
+            background-color: #DDEEFF; 
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 15px;
@@ -62,7 +62,7 @@
             text-align: center;
             border-radius: 5px;
         }
-        #next-button {
+        #next-button, #start-button, #reset-button, #reset-final-button {
             display: block;
             width: 100%;
             padding: 15px;
@@ -75,180 +75,300 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        #next-button:hover {
+        #next-button:hover, #start-button:hover, #reset-button:hover, #reset-final-button:hover {
             background-color: #0056b3;
         }
         .correct-answer {
-            background-color: #d4edda !important; /* Verde chiaro */
+            background-color: #d4edda !important; 
             color: #155724;
             border: 1px solid #c3e6cb;
         }
         .incorrect-answer {
-            background-color: #f8d7da !important; /* Rosso chiaro */
+            background-color: #f8d7da !important; 
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        /* Nascondi il contenuto del quiz all'inizio */
+        #quiz-content {
+            display: none;
+        }
+        #welcome-screen {
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
     <div id="quiz-container">
-        <div id="card-header"></div>
-        <p id="question-text"></p>
-
-        <form id="answer-form">
-            <button type="button" class="answer-button" data-answer="A"></button>
-            <button type="button" class="answer-button" data-answer="B"></button>
-            <button type="button" class="answer-button" data-answer="C"></button>
-            <button type="button" class="answer-button" data-answer="D"></button>
-        </form>
         
-        <div id="feedback"></div>
-        <button id="next-button" style="display: none;">Prossima Domanda Casuale</button>
+        <div id="welcome-screen">
+            <h1>Flags Checking Quiz - Palestina Edition</h1>
+            <div class="input-group">
+                <label for="playerName">Inserisci il tuo nome:</label>
+                <input type="text" id="playerName" placeholder="Nome team" maxlength="30">
+            </div>
+            <button id="start-button">Inizia la Partita</button>
+        </div>
+
+        <div id="quiz-content">
+            <div id="card-header"></div>
+            <p id="question-text"></p>
+
+            <div id="options-container">
+                <button type="button" class="answer-button" data-answer="A"></button>
+                <button type="button" class="answer-button" data-answer="B"></button>
+                <button type="button" class="answer-button" data-answer="C"></button>
+                <button type="button" class="answer-button" data-answer="D"></button>
+            </div>
+            
+            <div id="feedback"></div>
+            <p id="progress-info" style="margin-top: 15px; text-align: center; font-size: 14px; color: #555;"></p>
+            <button id="next-button" style="display: none;">Prossima Domanda Casuale</button>
+            <button id="reset-button" style="background-color: #dc3545; margin-top: 10px; display: none;">Ricomincia Partita</button>
+        </div>
+        
+        <div id="results" style="margin-top: 20px; text-align: center; font-weight: bold;">Punteggio: 0 su 0</div>
+
     </div>
-
+    
+    <script src="quizData.js"></script> 
+    
     <script>
-        // Database Completo delle 70 Domande
-        const quizData = [
-            { id: 1, categoria: "Geografia I", testo: "Quale stato confina con la Cisgiordania (West Bank) a est, lungo la maggior parte del Fiume Giordano?", opzioni: ["A) Siria", "B) Egitto", "C) Giordania", "D) Libano"], corretta: "C" },
-            { id: 2, categoria: "Geografia I", testo: "Qual è il punto più basso della Terra, un lago salato condiviso che si trova al confine tra la Cisgiordania e la Giordania?", opzioni: ["A) Mar Mediterraneo", "B) Mar Morto", "C) Mar Rosso", "D) Lago di Tiberiade"], corretta: "B" },
-            { id: 3, categoria: "Geografia I", testo: "Quale città è il centro urbano e la città più popolosa della Striscia di Gaza?", opzioni: ["A) Rafah", "B) Gaza City (Città di Gaza)", "C) Khan Yunis", "D) Gerico"], corretta: "B" },
-            { id: 4, categoria: "Geografia I", testo: "In quale regione geografica della Cisgiordania si trova la città di Betlemme?", opzioni: ["A) Valle del Giordano", "B) Samaria", "C) Giudea (Monti della Giudea)", "D) Striscia di Gaza"], corretta: "C" },
-            { id: 5, categoria: "Geografia I", testo: "Quale caratteristica climatica è prevalente nella maggior parte dei Territori Palestinesi (Cisgiordania e Striscia di Gaza)?", opzioni: ["A) Clima tropicale", "B) Clima continentale", "C) Clima desertico", "D) Clima mediterraneo"], corretta: "D" },
-            { id: 6, categoria: "Geografia I", testo: "Quale corpo idrico forma il confine occidentale della Striscia di Gaza?", opzioni: ["A) Lago di Hula", "B) Fiume Giordano", "C) Mar Mediterraneo", "D) Mar Morto"], corretta: "C" },
-            { id: 7, categoria: "Geografia I", testo: "La città di Gerico, l'oasi più antica del mondo, si trova in prossimità di quale grande valle o depressione geografica?", opzioni: ["A) Deserto del Negev", "B) Pianura costiera", "C) Valle del Giordano (Ghōr)", "D) Altopiano della Samaria"], corretta: "C" },
-            { id: 8, categoria: "Geografia I", testo: "Qual è la città palestinese situata più a nord nella Cisgiordania, nota come il capoluogo del governatorato della Samaria settentrionale?", opzioni: ["A) Hebron", "B) Ramallah", "C) Nablus", "D) Betlemme"], corretta: "C" },
-            { id: 9, categoria: "Geografia I", testo: "Quale paese si trova al confine meridionale della Striscia di Gaza, separato dal valico di Rafah?", opzioni: ["A) Arabia Saudita", "B) Giordania", "C) Egitto", "D) Siria"], corretta: "C" },
-            { id: 10, categoria: "Geografia II", testo: "Qual è la caratteristica geomorfologica distintiva della Cisgiordania (West Bank)?", opzioni: ["A) Vasta pianura alluvionale", "B) Un altopiano centrale prevalentemente montuoso e collinare.", "C) Catena vulcanica", "D) Profonda depressione desertica"], corretta: "B" },
-            { id: 11, categoria: "Storia I", testo: "Sotto quale impero fu stabilita la provincia di *Syria Palaestina* nel II secolo d.C., dopo la Rivolta di Bar Kokh?", opzioni: ["A) Ottomano", "B) Bizantino", "C) Impero Romano", "D) Achemenide"], corretta: "C" },
-            { id: 12, categoria: "Storia I", testo: "Dopo la divisione dell'Impero Romano, a quale impero rimase sotto l'amministrazione la Palestina fino alla conquista araba del VII secolo?", opzioni: ["A) Impero Bizantino (Romano d'Oriente)", "B) Romano d'Occidente", "C) Califfato Abasside", "D) Regno Latino"], corretta: "A" },
-            { id: 13, categoria: "Storia I", testo: "Quale dinastia islamica governò la Palestina subito dopo la conquista araba nel 636 d.C., stabilendo Damasco come capitale del Califfato?", opzioni: ["A) Ayyubidi", "B) Omayyadi (Umayyadi)", "C) Mamelucchi", "D) Fatimidi"], corretta: "B" },
-            { id: 14, categoria: "Storia I", testo: "Qual è il periodo storico in cui la regione della Palestina fu un campo di battaglia e sede di vari stati crociati?", opzioni: ["A) V a.C. - II a.C.", "B) XVII - XVIII secolo", "C) XI secolo - XIII secolo", "D) V - VII secolo"], corretta: "C" },
-            { id: 15, categoria: "Storia I", testo: "Per quale periodo di tempo la Palestina è rimasta ininterrottamente sotto il dominio dell'Impero Ottomano prima dello scioglimento post-Prima Guerra Mondiale?", opzioni: ["A) Circa 400 anni (1517-1917)", "B) Circa 50 anni", "C) Circa 1000 anni", "D) Circa 100 anni"], corretta: "A" },
-            { id: 16, categoria: "Storia I", testo: "Dopo la Prima Guerra Mondiale, l'amministrazione della Palestina fu assegnata a quale potenza europea attraverso un Mandato della Società delle Nazioni?", opzioni: ["A) Francia", "B) Italia", "C) Regno Unito", "D) Stati Uniti"], corretta: "C" },
-            { id: 17, categoria: "Storia I", testo: "Quale documento emesso dal governo britannico nel 1917 espresse il sostegno alla creazione di una 'dimora nazionale per il popolo ebraico' in Palestina?", opzioni: ["A) Accordi di Oslo", "B) Piano di spartizione", "C) Linea Verde", "D) Dichiarazione Balfour"], corretta: "D" },
-            { id: 18, categoria: "Storia I", testo: "Quale evento storico portò l'ONU a proporre la Risoluzione 181 (Piano di Spartizione) nel 1947?", opzioni: ["A) Crisi di Suez", "B) La decisione del Regno Unito di porre fine al Mandato", "C) Guerra dei Sei Giorni", "D) L'istituzione dell'OLP"], corretta: "B" },
-            { id: 19, categoria: "Storia II", testo: "Con quale nome è conosciuta in arabo la guerra del 1948 (conosciuta in Israele come Guerra d'Indipendenza), che portò all'esodo palestinese?", opzioni: ["A) Al-Nakba (La Catastrofe)", "B) Intifada", "C) Al-Quds", "D) Al-Ghor"], corretta: "A" },
-            { id: 20, categoria: "Storia II", testo: "Quale territorio palestinese (non la Striscia di Gaza) fu annesso e governato dalla Giordania tra il 1948 e il 1967?", opzioni: ["A) Il Negev", "B) Il Golan", "C) Gerusalemme Est", "D) La Cisgiordania (West Bank)"], corretta: "D" },
-            { id: 21, categoria: "Bandiera I", testo: "Qual è il significato del colore verde nella bandiera palestinese?", opzioni: ["A) Il sangue dei martiri", "B) La prosperità, la speranza e la terra fertile", "C) L'unità", "D) Il passato glorioso"], corretta: "B" },
-            { id: 22, categoria: "Bandiera I", testo: "Da quali tre colori sono composte le strisce orizzontali della bandiera palestinese?", opzioni: ["A) Rosso, Bianco, Verde", "B) Giallo, Blu, Rosso", "C) Nero, Bianco, Verde", "D) Nero, Rosso, Oro"], corretta: "C" },
-            { id: 23, categoria: "Bandiera I", testo: "Quale forma geometrica, di colore rosso, si trova sul lato dell'asta della bandiera palestinese?", opzioni: ["A) Un quadrato", "B) Un cerchio", "C) Un rettangolo", "D) Un triangolo"], corretta: "D" },
-            { id: 24, categoria: "Bandiera I", testo: "Il design della bandiera palestinese si basa direttamente su quale vessillo storico che rappresentava l'unità araba?", opzioni: ["A) Califfato Omayyade", "B) La bandiera della Rivolta Araba (1916)", "C) Mandato Britannico", "D) OLP originale"], corretta: "B" },
-            { id: 25, categoria: "Bandiera I", testo: "Qual è il significato del colore nero nella bandiera palestinese?", opzioni: ["A) La purezza e la pace", "B) L'oppressione e il passato oscuro della regione", "C) La fertilità", "D) L'Islam e la fede"], corretta: "B" },
-            { id: 26, categoria: "Bandiera I", testo: "Cosa rappresenta il disco rosso (il *Hinomaru*) al centro della bandiera nazionale del Giappone?", opzioni: ["A) La Luna Piena", "B) L'illuminazione buddhista", "C) Il Sole nascente", "D) Un antico stemma imperiale"], corretta: "C" },
-            { id: 27, categoria: "Bandiera I", testo: "La *Union Jack* del Regno Unito è la combinazione delle croci di quali tre santi patroni?", opzioni: ["A) Pietro, Marco, Matteo", "B) Giorgio, Davide, Patrizio", "C) Giorgio, Daniele, Andrea", "D) San Giorgio, Sant'Andrea, San Patrizio"], corretta: "D" },
-            { id: 28, categoria: "Bandiera II", testo: "Qual è il nome della ruota (o Chakra) blu con 24 raggi che si trova al centro della striscia bianca della bandiera dell'India?", opzioni: ["A) Dharma Sutra", "B) Om Mani Padme Hum", "C) Ashoka Chakra", "D) Guna Tattva"], corretta: "C" },
-            { id: 29, categoria: "Bandiera II", testo: "Qual è l'ordine corretto dei colori della bandiera nazionale della Germania (dall'alto verso il basso)?", opzioni: ["A) Rosso, Oro, Nero", "B) Nero, Rosso, Oro", "C) Oro, Rosso, Nero", "D) Nero, Giallo, Rosso"], corretta: "B" },
-            { id: 30, categoria: "Bandiera II", testo: "Perché la bandiera nazionale del Nepal è unica tra le bandiere di tutte le nazioni sovrane del mondo?", opzioni: ["A) È l'unica ad essere interamente verde", "B) Non è rettangolare, ma composta da due pennoni triangolari sovrapposti.", "C) È l'unica ad avere un drago", "D) È interamente bianca"], corretta: "B" },
-            { id: 31, categoria: "Bandiera II", testo: "Quale colore del *Tricolore* italiano è tradizionalmente associato alla speranza?", opzioni: ["A) Rosso", "B) Bianco", "C) Azzurro", "D) Verde"], corretta: "D" },
-            { id: 32, categoria: "Bandiera II", testo: "Quante stelle sono rappresentate sulla bandiera nazionale della Repubblica Popolare Cinese?", opzioni: ["A) Una (grande)", "B) Tre (una grande e due piccole)", "C) Cinque (una grande e quattro piccole)", "D) Quattordici"], corretta: "C" },
-            { id: 33, categoria: "Bandiera II", testo: "La bandiera della Svezia (e di tutte le nazioni nordiche) utilizza un disegno noto come:", opzioni: ["A) Croce di Sant'Andrea", "B) Croce nordica (o scandinava)", "C) Croce di San Giorgio", "D) Croce latina"], corretta: "B" },
-            { id: 34, categoria: "Bandiera II", testo: "Qual è il nome del simbolo centrale, il cerchio diviso in rosso e blu, che si trova sulla bandiera della Corea del Sud (*Taegeukgi*)?", opzioni: ["A) Taegeuk", "B) Gweon", "C) Hanja", "D) Mugunghwa"], corretta: "A" },
-            { id: 35, categoria: "Bandiera II", testo: "I colori della bandiera della Francia risalgono a quale evento storico?", opzioni: ["A) La fondazione della Quinta Repubblica", "B) La campagna di Napoleone", "C) La Rivoluzione francese", "D) Le Crociate medievali"], corretta: "C" },
-            { id: 36, categoria: "Bandiera II", testo: "Quale combinazione di simboli si trova sulla bandiera della Turchia?", opzioni: ["A) Leone e Scudo", "B) Sole e Mezzaluna", "C) Mezzaluna e Stella (a cinque punte)", "D) Aquila a due teste"], corretta: "C" },
-            { id: 37, categoria: "Bandiera III", testo: "Le nove strisce orizzontali bianche e blu alternate sulla bandiera della Grecia simboleggiano tradizionalmente:", opzioni: ["A) Le nove divinità", "B) Le nove regioni", "C) Le nove sillabe del motto nazionale", "D) I nove anni di guerra"], corretta: "C" },
-            { id: 38, categoria: "Bandiera III", testo: "Quale elemento rende unica la bandiera dell'Arabia Saudita rispetto alla maggior parte delle bandiere nazionali?", opzioni: ["A) Contiene una scritta in arabo (la *shahada*) che la rende non reversibile.", "B) È l'unica bandiera interamente verde", "C) Ha una forma pentagonale", "D) Contiene un ritratto del sovrano"], corretta: "A" },
-            { id: 39, categoria: "Bandiera III", testo: "Qual è la forma inusuale della bandiera nazionale della Svizzera?", opzioni: ["A) Trapezoidale", "B) Quadrata", "C) Rettangolare con croce decentrata", "D) Rettangolare con proporzioni 1:3"], corretta: "B" },
-            { id: 40, categoria: "Bandiera III", testo: "Qual è il significato della stella gialla al centro della bandiera rossa del Vietnam?", opzioni: ["A) La stella polare", "B) La leadership del Partito Comunista e le cinque classi principali della società", "C) Il riso", "D) L'unità con la Cina"], corretta: "B" },
-            { id: 41, categoria: "Geografia III", testo: "Which major city in the West Bank is famous for the Cave of the Patriarchs (Ibrahimi Mosque) and is located in the southern hills?", opzioni: ["A) Ramallah", "B) Nablus", "C) Hebron (Al-Khalil)", "D) Jenin"], corretta: "C" },
-            { id: 42, categoria: "Geografia III", testo: "What is the official name, in English, for the Palestinian coastal territory situated along the Mediterranean Sea?", opzioni: ["A) The Western Coast", "B) The Gaza Shore", "C) The Gaza Strip", "D) The Mediterranean Exclave"], corretta: "C" },
-            { id: 43, categoria: "Bandiera IV", testo: "Which color in the Palestinian flag symbolizes the Umayyad Caliphate and a period of Arab glory and resilience?", opzioni: ["A) Red", "B) White", "C) Black", "D) Green"], corretta: "C" },
-            { id: 44, categoria: "Geografia III", testo: "The Palestinian city of Ramallah serves as the *de facto* administrative capital and is generally located in which part of the West Bank?", opzioni: ["A) North", "B) Central", "C) South", "D) East (Jordan Valley)"], corretta: "B" },
-            { id: 45, categoria: "Bandiera IV", testo: "What do the four colors (Black, White, Green, and Red) of the Palestinian flag represent collectively?", opzioni: ["A) The four sacred cities", "B) Pan-Arab colors and unity", "C) The four seasons", "D) The four major religious groups"], corretta: "B" },
-            { id: 46, categoria: "Geografia IV", testo: "The highest point in the West Bank is generally considered to be near which city or geographic region?", opzioni: ["A) Jericho", "B) Bethlehem", "C) Gaza", "D) Hebron / Mount Nabi Yunis"], corretta: "D" },
-            { id: 47, categoria: "Geografia IV", testo: "What separates the major Palestinian population centers of the West Bank (Cisgiordania) from the Gaza Strip?", opzioni: ["A) The Jordan River", "B) The Dead Sea", "C) Israeli territory", "D) The border with Jordan"], corretta: "C" },
-            { id: 48, categoria: "Bandiera IV", testo: "The white stripe in the Palestinian flag is horizontally positioned between which two colors?", opzioni: ["A) Red and Green", "B) Black and Green", "C) Red and Black", "D) Green and Red"], corretta: "B" },
-            { id: 49, categoria: "Bandiera IV", testo: "In vexillology, the three horizontal stripes combined with the triangle on the hoist side form a design known as a 'Tricolour' and a '...' ?", opzioni: ["A) Cross", "B) Banner", "C) Chevron", "D) Lozenge"], corretta: "C" },
-            { id: 50, categoria: "Geografia IV", testo: "Which physical feature marks the westernmost boundary of the Palestinian areas in the West Bank?", opzioni: ["A) The Jordan River", "B) The Dead Sea shoreline", "C) The mountain ridge (Judean and Samarian hills)", "D) The border with Jordan"], corretta: "C" },
-            { id: 51, categoria: "Geografia V", testo: "La Cisgiordania è prevalentemente montuosa. Qual è il suo punto di accesso e di uscita verso il Mar Mediterraneo?", opzioni: ["A) Non ha accesso al Mar Mediterraneo", "B) Attraverso il Fiume Giordano", "C) È completamente circondata da terra", "D) Il porto di Ashdod"], corretta: "A" },
-            { id: 52, categoria: "Geografia V", testo: "Quale valle fertile si estende lungo il Fiume Giordano ed è l'area più bassa della Cisgiordania?", opzioni: ["A) La Valle del Giordano (Jordan Valley)", "B) La Valle di Esdraelon", "C) La Valle di Ajalon", "D) La Valle di Sorek"], corretta: "A" },
-            { id: 53, categoria: "Geografia V", testo: "Qual è il valico di frontiera tra la Striscia di Gaza e l'Egitto?", opzioni: ["A) Valico di Allenby", "B) Valico di Quneitra", "C) Valico di Erez", "D) Valico di Rafah"], corretta: "D" },
-            { id: 54, categoria: "Geografia V", testo: "Quale città della Cisgiordania è famosa per la Chiesa della Natività e si trova a sud di Gerusalemme?", opzioni: ["A) Hebron", "B) Nablus", "C) Betlemme", "D) Ramallah"], corretta: "C" },
-            { id: 55, categoria: "Geografia V", testo: "Quale corpo idrico, noto per la sua salinità, si trova all'estremità meridionale della Valle del Giordano?", opzioni: ["A) Lago di Hula", "B) Mar Morto", "C) Mar Rosso", "D) Golfo di Aqaba"], corretta: "B" },
-            { id: 56, categoria: "Geografia V", testo: "La Striscia di Gaza si trova nella regione storica conosciuta come:", opzioni: ["A) Samaria", "B) Giudea", "C) L'Altopiano Centrale", "D) La Pianura Costiera Meridionale"], corretta: "D" },
-            { id: 57, categoria: "Geografia V", testo: "Quale delle seguenti città è considerata il centro amministrativo dell'Autorità Nazionale Palestinese (ANP)?", opzioni: ["A) Gerico", "B) Ramallah", "C) Gaza City", "D) Hebron"], corretta: "B" },
-            { id: 58, categoria: "Geografia V", testo: "Quali due catene montuose fiancheggiano la città di Nablus nella Cisgiordania settentrionale?", opzioni: ["A) Monte Scopus e Olivi", "B) Monte Carmel e Tabor", "C) Monte Nebo e Hermon", "D) Monte Ebal e Monte Garizim"], corretta: "D" },
-            { id: 59, categoria: "Geografia V", testo: "Qual è la caratteristica climatica specifica degli altopiani della Giudea e della Samaria?", opzioni: ["A) Inverni freddi e umidi con possibili nevicate, estati calde e secche", "B) Clima desertico", "C) Clima tropicale", "D) Clima subartico"], corretta: "A" },
-            { id: 60, categoria: "Geografia V", testo: "Il fiume Giordano sfocia in quale corpo idrico, che segna il punto finale del suo corso?", opzioni: ["A) Mar Mediterraneo", "B) Mar Morto", "C) Lago di Tiberiade", "D) Mar Rosso"], corretta: "B" },
-            { id: 61, categoria: "Storia IV", testo: "Dopo la conquista islamica del VII secolo, i Fatimidi, una dinastia sciita, governarono la Palestina da quale città principale nel X e XI secolo?", opzioni: ["A) Damasco", "B) Il Cairo", "C) Bagdad", "D) Istanbul"], corretta: "B" },
-            { id: 62, categoria: "Storia IV", testo: "Quale sultano curdo sconfisse i crociati e riconquistò Gerusalemme nel 1187?", opzioni: ["A) Baybars", "B) Saladino (Salah al-Din)", "C) Tamerlano", "D) Altri"], corretta: "B" },
-            { id: 63, categoria: "Storia IV", testo: "L'Impero Ottomano conquistò la Palestina sconfiggendo quale potenza nel 1517?", opzioni: ["A) Impero Bizantino", "B) Mamelucchi (sultanato d'Egitto)", "C) Impero Safavide", "D) Il Regno Latino"], corretta: "B" },
-            { id: 64, categoria: "Storia V", testo: "Quale fu il nome del piano proposto dalle Nazioni Unite nel 1947 per dividere la Palestina del Mandato in due stati?", opzioni: ["A) Risoluzione 181 (Piano di Spartizione)", "B) Piano della Commissione Peel", "C) Accordo Sykes-Picot", "D) Dichiarazione di Londra"], corretta: "A" },
-            { id: 65, categoria: "Storia V", testo: "La 'Grande Rivolta Araba' contro il Mandato Britannico e l'immigrazione ebraica si svolse tra quali anni?", opzioni: ["A) 1917–1920", "B) 1956–1957", "C) 1936–1939", "D) 1967–1968"], corretta: "C" },
-            { id: 66, categoria: "Storia V", testo: "Quale evento storico portò Israele a conquistare e occupare la Cisgiordania e la Striscia di Gaza nel 1967?", opzioni: ["A) La Guerra del Kippur", "B) La Guerra dei Sei Giorni", "C) La Crisi di Suez", "D) La Prima Intifada"], corretta: "B" },
-            { id: 67, categoria: "Storia V", testo: "La Prima Intifada, la rivolta palestinese popolare contro l'occupazione israeliana, è iniziata in quale anno?", opzioni: ["A) 1973", "B) 1987", "C) 1993", "D) 2000"], corretta: "B" },
-            { id: 68, categoria: "Storia V", testo: "Gli Accordi di Oslo (1993 e 1995) hanno portato alla creazione di quale organo di autogoverno palestinese?", opzioni: ["A) Il Consiglio Legislativo Palestinese", "B) L'Organizzazione per la Liberazione della Palestina", "C) La Lega Araba", "D) L'Autorità Nazionale Palestinese (ANP)"], corretta: "D" },
-            { id: 69, categoria: "Storia V", testo: "Quale città della Palestina fu il luogo in cui nacque la Seconda Intifada (Intifada di Al-Aqsa) nell'anno 2000?", opzioni: ["A) Ramallah", "B) Gaza City", "C) Gerusalemme (Monte del Tempio/Haram al-Sharif)", "D) Hebron"], corretta: "C" },
-            { id: 70, categoria: "Storia V", testo: "Il 'disimpegno' unilaterale di Israele, che portò allo smantellamento degli insediamenti e al ritiro delle forze militari dalla Striscia di Gaza, avvenne in quale anno?", opzioni: ["A) 1995", "B) 2000", "C) 2005", "D) 2007"], corretta: "C" },
-            // Ho omesso le ultime 23 domande per coerenza con il "set di 70" precedentemente fornito.
-        ];
+        // =========================================================================
+        // Logica JavaScript del Quiz
+        // =========================================================================
 
-        let currentQuestion = null;
-
-        function caricaDomandaCasuale() {
-            // 1. Reset dell'interfaccia
-            document.getElementById('feedback').innerHTML = "";
-            document.getElementById('next-button').style.display = 'none';
-            document.querySelectorAll('.answer-button').forEach(button => {
-                button.disabled = false;
-                button.classList.remove('correct-answer', 'incorrect-answer');
-                button.style.backgroundColor = '#f9f9f9';
-            });
-
-            // 2. Selezione Casuale: Genera un indice casuale
-            const indiceCasuale = Math.floor(Math.random() * quizData.length);
-            currentQuestion = quizData[indiceCasuale];
-
-            // 3. Visualizzazione: Inserisci il testo negli elementi HTML
-            document.getElementById('card-header').innerHTML = `ID: Q. ${currentQuestion.id} 🇵🇸 | ${currentQuestion.categoria}`;
-            document.getElementById('question-text').innerText = currentQuestion.testo;
-
-            const opzioniButtons = document.querySelectorAll('.answer-button');
-            currentQuestion.opzioni.forEach((opzione, index) => {
-                opzioniButtons[index].innerText = opzione;
-                opzioniButtons[index].setAttribute('data-answer', String.fromCharCode(65 + index)); // A=65, B=66, C=67, D=68
-            });
+        // Verifica se quizData è definito dal file quizData.js
+        if (typeof quizData === 'undefined') {
+            console.error("Errore: Il file quizData.js non è stato caricato correttamente o non contiene la variabile quizData.");
         }
 
-        function verificaRisposta(rispostaUtente) {
-            if (!currentQuestion) return; 
+        // Variabili di Stato
+        let askedQuestions = [];   // IDs delle domande già poste
+        let currentQuestion = null; // Domanda corrente
+        let score = 0;              // Punteggio totale
+        let totalAttempts = 0;      // Tentativi totali
+        let playerName = 'Giocatore';
 
-            const rispostaCorretta = currentQuestion.corretta;
-            const feedbackElement = document.getElementById('feedback');
+        // Riferimenti agli Elementi DOM
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizContent = document.getElementById('quiz-content');
+        const startButton = document.getElementById('start-button');
+        const playerNameInput = document.getElementById('playerName');
+        const cardHeader = document.getElementById('card-header');
+        const questionTextElement = document.getElementById('question-text');
+        // Riferimento corretto a tutti i pulsanti di risposta
+        const answerButtons = document.querySelectorAll('#options-container .answer-button'); 
+        const feedbackElement = document.getElementById('feedback');
+        const nextButton = document.getElementById('next-button');
+        const resetButton = document.getElementById('reset-button');
+        const resultsElement = document.getElementById('results');
+
+        // -------------------------------------------------------------------------
+        // 1. FUNZIONE DI INIZIALIZZAZIONE E AVVIO
+        // -------------------------------------------------------------------------
+
+        function initializeQuiz() {
+            // Nasconde il contenuto del quiz e mostra la schermata di benvenuto
+            quizContent.style.display = 'none';
+            welcomeScreen.style.display = 'block';
+            resultsElement.textContent = `Punteggio: 0 su 0`;
             
-            // Disabilita tutti i pulsanti dopo la risposta
-            document.querySelectorAll('.answer-button').forEach(button => button.disabled = true);
+            // Resetta le variabili di stato
+            askedQuestions = [];
+            score = 0;
+            totalAttempts = 0;
+            
+            nextButton.style.display = 'none';
+            resetButton.style.display = 'none';
+            feedbackElement.textContent = '';
+            
+            // Ripristina l'HTML iniziale della welcome screen per evitare l'endGame
+            welcomeScreen.innerHTML = `
+                <h1>Flags Checking Quiz - Palestina Edition</h1>
+                <div class="input-group">
+                    <label for="playerName">Inserisci il nome della partita:</label>
+                    <input type="text" id="playerName" placeholder="Nome team" maxlength="30" value="${playerNameInput.value || ''}">
+                </div>
+                <button id="start-button">Inizia la Partita</button>
+            `;
+            // Riassegna l'evento al nuovo pulsante "Inizia la Partita"
+            document.getElementById('start-button').addEventListener('click', startQuiz);
+            
+            // Riassegna il riferimento all'input se necessario
+            // Nota: in questo caso non serve perché stiamo per ricaricare la pagina per un reset completo
+        }
 
-            const bottoneCliccato = document.querySelector(`.answer-button[data-answer="${rispostaUtente}"]`);
-            const bottoneCorretto = document.querySelector(`.answer-button[data-answer="${rispostaCorretta}"]`);
-
-            if (rispostaUtente === rispostaCorretta) {
-                feedbackElement.innerHTML = "RISPOSTA CORRETTA! ✅";
-                feedbackElement.style.color = "green";
-                bottoneCliccato.classList.add('correct-answer');
-            } else {
-                feedbackElement.innerHTML = `SBAGLIATO! La risposta corretta è ${rispostaCorretta}. ❌`;
-                feedbackElement.style.color = "red";
-                bottoneCliccato.classList.add('incorrect-answer');
-                bottoneCorretto.classList.add('correct-answer'); // Evidenzia la corretta
+        function startQuiz() {
+            // Rilegge il nome dal campo input che potrebbe essere stato ricreato/aggiornato
+            const currentNameInput = document.getElementById('playerName');
+            playerName = currentNameInput ? (currentNameInput.value.trim() || 'Giocatore') : 'Giocatore';
+            
+            if (playerName.length < 2) {
+                alert('Per favore, inserisci un nome valido di almeno 2 caratteri.');
+                return;
             }
 
-            document.getElementById('next-button').style.display = 'block';
+            // Passa alla schermata del quiz
+            welcomeScreen.style.display = 'none';
+            quizContent.style.display = 'block';
+            resetButton.style.display = 'block';
+            
+            loadNextQuestion();
         }
 
-        // Collega i gestori di eventi all'avvio
-        document.addEventListener('DOMContentLoaded', () => {
-            // Collega il listener ai pulsanti di risposta
-            document.querySelectorAll('.answer-button').forEach(button => {
-                button.addEventListener('click', () => verificaRisposta(button.getAttribute('data-answer')));
+        // -------------------------------------------------------------------------
+        // 2. LOGICA DOMANDA
+        // -------------------------------------------------------------------------
+
+        function loadNextQuestion() {
+            // Filtra le domande non ancora poste
+            const availableQuestions = quizData.filter(q => !askedQuestions.includes(q.id));
+
+            if (availableQuestions.length === 0) {
+                endGame();
+                return;
+            }
+
+            // Sceglie una domanda casuale tra quelle disponibili
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            currentQuestion = availableQuestions[randomIndex];
+
+            // Resetta l'interfaccia
+            feedbackElement.textContent = '';
+            nextButton.style.display = 'none';
+            
+            // Riabilita e resetta i pulsanti
+            answerButtons.forEach((button, index) => {
+                button.disabled = false;
+                button.classList.remove('correct-answer', 'incorrect-answer');
+                
+                // Assegna il testo della risposta
+                if (index < currentQuestion.opzioni.length) {
+                    button.textContent = currentQuestion.opzioni[index];
+                    button.style.display = 'block';
+                } else {
+                    button.style.display = 'none'; // Nasconde se ci sono meno di 4 opzioni
+                }
             });
 
-            // Collega il listener al pulsante Prossima Domanda
-            document.getElementById('next-button').addEventListener('click', caricaDomandaCasuale);
+            // Aggiorna il testo e l'header
+            cardHeader.textContent = `Categoria: ${currentQuestion.categoria} | Livello: ${currentQuestion.difficoltà} | Domanda n. ${askedQuestions.length + 1}`;
+            questionTextElement.textContent = currentQuestion.testo;
+        }
 
-            // Carica la prima domanda all'avvio della pagina
-            caricaDomandaCasuale();
+        // -------------------------------------------------------------------------
+        // 3. GESTIONE RISPOSTA
+        // -------------------------------------------------------------------------
+
+        function handleAnswer(event) {
+            // Previene l'azione se il pulsante è disabilitato
+            if (event.target.disabled) return; 
+
+            const selectedAnswer = event.target.getAttribute('data-answer');
+            const correctKey = currentQuestion.corretta;
+            
+            // Disabilita tutti i pulsanti di risposta
+            answerButtons.forEach(button => {
+                button.disabled = true;
+            });
+
+            totalAttempts++;
+            askedQuestions.push(currentQuestion.id);
+
+            if (selectedAnswer === correctKey) {
+                score++;
+                event.target.classList.add('correct-answer');
+                feedbackElement.textContent = `Corretto! 🎉`;
+            } else {
+                event.target.classList.add('incorrect-answer');
+                // Evidenzia la risposta corretta
+                const correctButton = Array.from(answerButtons).find(btn => btn.getAttribute('data-answer') === correctKey);
+                if (correctButton) {
+                    correctButton.classList.add('correct-answer');
+                }
+                feedbackElement.textContent = `Sbagliato. La risposta corretta era ${correctKey}.`;
+            }
+            
+            // Aggiorna il punteggio e mostra il pulsante "Prossima"
+            resultsElement.textContent = `Punteggio: ${score} su ${totalAttempts}`;
+            nextButton.style.display = 'block';
+        }
+
+
+        // -------------------------------------------------------------------------
+        // 4. FINE PARTITA
+        // -------------------------------------------------------------------------
+
+        function endGame() {
+            quizContent.style.display = 'none';
+            // Non mostra la welcome screen per non sovrascrivere i risultati
+            welcomeScreen.style.display = 'block'; 
+
+            let finalMessage = `Partita Terminata, ${playerName}! 🏁\n`;
+            finalMessage += `Hai risposto a tutte le domande disponibili (${totalAttempts}).\n`;
+            
+            let percentage = (totalAttempts > 0) ? ((score / totalAttempts) * 100).toFixed(1) : 0;
+            finalMessage += `Punteggio Finale: ${score} su ${totalAttempts} (${percentage}%)`;
+            
+            // Sostituisce il contenuto della welcome screen con il risultato finale
+            welcomeScreen.innerHTML = `
+                <h1>Risultati Finali</h1>
+                <p style="font-size: 1.2em; white-space: pre-line;">${finalMessage}</p>
+                <button id="reset-final-button">Ricomincia</button>
+            `;
+            
+            // Riassegna l'evento al nuovo pulsante "Ricomincia"
+            document.getElementById('reset-final-button').addEventListener('click', () => {
+                // Un semplice ricaricamento di pagina è il modo più pulito per resettare l'intero stato
+                window.location.reload(); 
+            });
+        }
+
+
+        // -------------------------------------------------------------------------
+        // 5. LISTENER DI EVENTI
+        // -------------------------------------------------------------------------
+
+        // Avvio della partita (gestito nel window.onload in initializeQuiz)
+        startButton.addEventListener('click', startQuiz);
+
+        // Passaggio alla domanda successiva
+        nextButton.addEventListener('click', loadNextQuestion);
+
+        // Reset / Ricomincia
+        resetButton.addEventListener('click', () => {
+             // Un semplice ricaricamento di pagina è il modo più pulito
+             window.location.reload(); 
         });
+
+        // Gestione click sui pulsanti di risposta
+        answerButtons.forEach(button => {
+            button.addEventListener('click', handleAnswer);
+        });
+
+
+        // -------------------------------------------------------------------------
+        // 6. AVVIO INIZIALE
+        // -------------------------------------------------------------------------
+
+        // Avvia l'interfaccia iniziale al caricamento della pagina
+        window.onload = initializeQuiz;
     </script>
 </body>
 </html>
