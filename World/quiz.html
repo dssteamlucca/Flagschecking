@@ -124,7 +124,7 @@
 
         /* Stile per l'immagine animata WebP */
         #globe-image {
-            max-width: 150px; /* Mantieni la dimensione come il globo CSS */
+            max-width: 150px; 
             height: auto;
             margin-bottom: 20px;
         }
@@ -169,17 +169,32 @@
         const quizContent = document.getElementById('quiz-content');
         const resultsElement = document.getElementById('results');
         const feedbackText = document.getElementById('feedback-text');
-        const globeImage = document.getElementById('globe-image'); // Selettore per nascondere l'immagine alla fine
+        const globeImage = document.getElementById('globe-image'); 
         
+        // --- FUNZIONE CHIAVE: Converte il codice ISO (es. IT) in Emoji di Bandiera (🇮🇹) ---
+        function getFlagEmoji(countryCode) {
+          if (!countryCode) return '';
+          // Converte le due lettere maiuscole nei rispettivi Regional Indicator Symbols
+          const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt());
+          return String.fromCodePoint(...codePoints);
+        }
+        // --------------------------------------------------------------------------------
+
         // --- Funzione Principale di Avvio/Caricamento ---
 
-        // Controlla subito se i dati del quiz sono disponibili
         if (typeof quizData === 'undefined' || quizData.length === 0) {
             startButton.disabled = true;
             startButton.textContent = 'Errore: Dati Quiz Mancanti!';
             console.error("L'array quizData non è definito o è vuoto. Controlla quizData.js.");
         } else {
-            availableQuestions = [...quizData]; // Popola l'array delle domande disponibili
+            // Verifica che tutte le domande abbiano il campo 'isoCode' (necessario per le bandiere)
+            const isWorldEditionReady = quizData.every(q => q.hasOwnProperty('isoCode'));
+            if (!isWorldEditionReady) {
+                startButton.disabled = true;
+                startButton.textContent = 'Errore: Mancano i codici ISO nelle domande!';
+                console.error("Molte domande nel quizData.js non contengono il campo 'isoCode'.");
+            }
+            availableQuestions = [...quizData];
         }
 
         // Evento di Avvio
@@ -202,7 +217,7 @@
 
         function loadNextRandomQuestion() {
             isAnswered = false;
-            feedbackText.textContent = ''; // Pulisce il feedback
+            feedbackText.textContent = ''; 
             feedbackText.className = '';
             nextButton.disabled = true;
 
@@ -211,16 +226,12 @@
                 return;
             }
 
-            // 1. Scegli una domanda casuale tra quelle disponibili
             const randomIndex = Math.floor(Math.random() * availableQuestions.length);
             currentQuestionData = availableQuestions[randomIndex];
-            
-            // Rimuovi la domanda dall'array delle disponibili per evitare ripetizioni
             availableQuestions.splice(randomIndex, 1); 
             
-            currentQuestionIndex++; // Incrementa il contatore delle domande
+            currentQuestionIndex++; 
 
-            // 2. Visualizza la domanda
             questionTextElement.textContent = `${currentQuestionIndex}. ${currentQuestionData.testo}`;
             optionsContainer.innerHTML = '';
             
@@ -231,7 +242,6 @@
                 optionsContainer.appendChild(button);
             });
 
-            // 3. Aggiorna il testo del pulsante Successivo
             if (availableQuestions.length === 0) {
                 nextButton.textContent = 'Mostra Risultati';
             } else {
@@ -240,23 +250,26 @@
         }
 
         function selectOption(selectedButton, selectedOption) {
-            if (isAnswered) return; // Impedisce il doppio click
+            if (isAnswered) return;
             isAnswered = true;
 
             const isCorrect = (selectedOption.trim() === currentQuestionData.corretta.trim());
             
-            // 1. Feedback testuale e colore
+            // Genera l'emoji della bandiera usando il codice ISO
+            const flagEmoji = getFlagEmoji(currentQuestionData.isoCode);
+            
             if (isCorrect) {
-                feedbackText.textContent = 'Risposta esatta!';
+                // Aggiunge l'emoji al messaggio di risposta esatta
+                feedbackText.textContent = `Risposta esatta! ${flagEmoji}`;
                 feedbackText.className = 'feedback-correct';
                 score++;
                 selectedButton.classList.add('correct-feedback');
             } else {
-                feedbackText.textContent = 'Sbagliato. La risposta corretta è: ' + currentQuestionData.corretta;
+                // Aggiunge l'emoji al messaggio di risposta sbagliata
+                feedbackText.textContent = `Sbagliato. La risposta corretta è: ${currentQuestionData.corretta} ${flagEmoji}`;
                 feedbackText.className = 'feedback-incorrect';
                 selectedButton.classList.add('incorrect-feedback');
                 
-                // Evidenzia la risposta corretta (se l'utente ha sbagliato)
                 Array.from(optionsContainer.children).forEach(button => {
                     if (button.textContent.trim() === currentQuestionData.corretta.trim()) {
                          button.classList.add('correct-feedback');
@@ -264,7 +277,7 @@
                 });
             }
 
-            // 2. Disabilita tutti i pulsanti e abilita Successivo
+            // Disabilita i pulsanti e abilita Successivo
             Array.from(optionsContainer.children).forEach(button => {
                 button.disabled = true;
             });
@@ -274,8 +287,9 @@
         function showResults() {
             resultsElement.innerHTML = `Hai risposto correttamente a ${score} domande su ${quizData.length}!`;
             
-            // Nasconde l'area del quiz e l'immagine del globo
             quizContent.style.display = 'none';
+            feedbackText.style.display = 'none';
+            
             if(globeImage) globeImage.style.display = 'none';
         }
     </script>
