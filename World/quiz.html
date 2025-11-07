@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Edition - Flags Checking Quiz</title>
     <style>
-        /* CSS omesso per brevità, ma DEVE essere incluso */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -34,6 +33,7 @@
             margin-bottom: 20px;
             font-size: 1.1em;
             line-height: 1.4;
+            font-weight: bold;
         }
         .options button {
             display: block;
@@ -42,36 +42,62 @@
             margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            background-color: #e0e0e0;
             font-size: 1em;
             cursor: pointer;
             transition: background-color 0.3s, border-color 0.3s;
+            color: white; 
+            font-weight: bold;
         }
-        .options button:hover {
-            background-color: #d0d0d0;
-            border-color: #ccc;
+        
+        /* Colori iniziali dei pulsanti VERO/FALSO */
+        .options button:nth-child(1) { /* Primo pulsante (Vero) */
+            background-color: #4CAF50; /* Verde */
+            border-color: #45a049;
         }
-        .options button.correct {
-            background-color: #d4edda;
-            border-color: #28a745;
+        .options button:nth-child(2) { /* Secondo pulsante (Falso) */
+            background-color: #f44336; /* Rosso */
+            border-color: #e53935;
+        }
+
+        /* Effetti al passaggio del mouse */
+        .options button:nth-child(1):hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        .options button:nth-child(2):hover:not(:disabled) {
+            background-color: #e53935;
+        }
+
+        /* Classi di Feedback dopo la risposta */
+        .options button.correct-feedback {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+        }
+        .options button.incorrect-feedback {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+        
+        /* Stile per il feedback testuale */
+        #feedback-text {
+            margin: 15px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 25px;
+        }
+        .feedback-correct {
             color: #28a745;
         }
-        .options button.incorrect {
-            background-color: #f8d7da;
-            border-color: #dc3545;
+        .feedback-incorrect {
             color: #dc3545;
         }
-        .options button:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+        
         .navigation {
             margin-top: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
         }
         .navigation button {
-            padding: 10px 20px;
+            padding: 10px 30px;
             border: none;
             border-radius: 5px;
             background-color: #007bff;
@@ -80,7 +106,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .navigation button:hover {
+        .navigation button:hover:not(:disabled) {
             background-color: #0056b3;
         }
         .navigation button:disabled {
@@ -92,25 +118,20 @@
             font-size: 1.2em;
             font-weight: bold;
         }
-        #globe-image {
-            max-width: 150px;
-            height: auto;
-            margin-bottom: 20px;
-            animation: rotateGlobe 10s infinite linear;
-        }
-        /* Nasconde l'area quiz fino all'avvio */
         #quiz-content {
             display: none; 
         }
 
-        @keyframes rotateGlobe {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
+        /* Stile per l'immagine animata WebP */
+        #globe-image {
+            max-width: 150px; /* Mantieni la dimensione come il globo CSS */
+            height: auto;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <img id="globe-image" src="globe.png" alt="Globo Terrestre">
+    <img id="globe-image" src="globe-anim.webp" alt="Globo Animato">
 
     <div class="container">
         <h1>World Edition - Flags Checking Quiz</h1>
@@ -119,8 +140,10 @@
             <div id="quiz-content" style="display: none;"> 
                 <div class="question" id="question-text"></div>
                 <div class="options" id="options-container"></div>
+                
+                <div id="feedback-text"></div> 
+
                 <div class="navigation">
-                    <button id="prev-btn" disabled>Precedente</button>
                     <button id="next-btn" disabled>Successivo</button>
                 </div>
             </div>
@@ -133,127 +156,128 @@
 
     <script src="quizData.js"></script>
     <script>
+        let availableQuestions = []; 
         let currentQuestionIndex = 0;
         let score = 0;
-        let userAnswers = {}; 
+        let currentQuestionData = null; 
+        let isAnswered = false; 
 
         const questionTextElement = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
-        const prevButton = document.getElementById('prev-btn');
         const nextButton = document.getElementById('next-btn');
         const startButton = document.getElementById('start-button');
         const quizContent = document.getElementById('quiz-content');
         const resultsElement = document.getElementById('results');
+        const feedbackText = document.getElementById('feedback-text');
+        const globeImage = document.getElementById('globe-image'); // Selettore per nascondere l'immagine alla fine
+        
+        // --- Funzione Principale di Avvio/Caricamento ---
 
         // Controlla subito se i dati del quiz sono disponibili
         if (typeof quizData === 'undefined' || quizData.length === 0) {
             startButton.disabled = true;
             startButton.textContent = 'Errore: Dati Quiz Mancanti!';
             console.error("L'array quizData non è definito o è vuoto. Controlla quizData.js.");
+        } else {
+            availableQuestions = [...quizData]; // Popola l'array delle domande disponibili
         }
 
-        // Funzione di Avvio
+        // Evento di Avvio
         startButton.addEventListener('click', () => {
-            if (quizData.length > 0) {
-                startButton.style.display = 'none'; // Nasconde il pulsante "Inizia il gioco"
-                quizContent.style.display = 'block'; // Mostra l'area del quiz
-                loadQuestion();
+            if (availableQuestions.length > 0) {
+                startButton.style.display = 'none';
+                quizContent.style.display = 'block';
+                loadNextRandomQuestion();
             }
         });
 
-        function loadQuestion() {
-            if (currentQuestionIndex < quizData.length) {
-                const question = quizData[currentQuestionIndex];
-                questionTextElement.textContent = `(${currentQuestionIndex + 1}/${quizData.length}) ${question.testo}`;
-                optionsContainer.innerHTML = '';
-                
-                let answerGiven = !!userAnswers[question.id]; // true se l'utente ha già risposto
-
-                question.opzioni.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option;
-                    button.onclick = () => selectOption(option);
-                    button.disabled = answerGiven; // Disabilita se già risposto
-                    optionsContainer.appendChild(button);
-                });
-
-                // Aggiorna testo e stato del pulsante Next
-                if (currentQuestionIndex === quizData.length - 1) {
-                    nextButton.textContent = 'Mostra Risultati';
-                } else {
-                    nextButton.textContent = 'Successivo';
-                }
-
-                // Abilita/Disabilita pulsante Precedente e Successivo
-                prevButton.disabled = currentQuestionIndex === 0;
-                nextButton.disabled = !answerGiven; 
-
-                // Evidenzia la selezione utente se presente
-                if (answerGiven) {
-                    highlightSelectedOption(userAnswers[question.id]);
-                }
+        // Evento Pulsante Successivo
+        nextButton.addEventListener('click', () => {
+            if (availableQuestions.length > 0) {
+                loadNextRandomQuestion();
             } else {
                 showResults();
             }
+        });
+
+        function loadNextRandomQuestion() {
+            isAnswered = false;
+            feedbackText.textContent = ''; // Pulisce il feedback
+            feedbackText.className = '';
+            nextButton.disabled = true;
+
+            if (availableQuestions.length === 0) {
+                showResults();
+                return;
+            }
+
+            // 1. Scegli una domanda casuale tra quelle disponibili
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            currentQuestionData = availableQuestions[randomIndex];
+            
+            // Rimuovi la domanda dall'array delle disponibili per evitare ripetizioni
+            availableQuestions.splice(randomIndex, 1); 
+            
+            currentQuestionIndex++; // Incrementa il contatore delle domande
+
+            // 2. Visualizza la domanda
+            questionTextElement.textContent = `${currentQuestionIndex}. ${currentQuestionData.testo}`;
+            optionsContainer.innerHTML = '';
+            
+            currentQuestionData.opzioni.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => selectOption(button, option);
+                optionsContainer.appendChild(button);
+            });
+
+            // 3. Aggiorna il testo del pulsante Successivo
+            if (availableQuestions.length === 0) {
+                nextButton.textContent = 'Mostra Risultati';
+            } else {
+                nextButton.textContent = 'Successivo';
+            }
         }
 
-        function selectOption(selectedOption) {
-            const question = quizData[currentQuestionIndex];
-            userAnswers[question.id] = selectedOption; 
+        function selectOption(selectedButton, selectedOption) {
+            if (isAnswered) return; // Impedisce il doppio click
+            isAnswered = true;
 
-            // Disabilita tutti i bottoni dopo la selezione e abilita Successivo
+            const isCorrect = (selectedOption.trim() === currentQuestionData.corretta.trim());
+            
+            // 1. Feedback testuale e colore
+            if (isCorrect) {
+                feedbackText.textContent = 'Risposta esatta!';
+                feedbackText.className = 'feedback-correct';
+                score++;
+                selectedButton.classList.add('correct-feedback');
+            } else {
+                feedbackText.textContent = 'Sbagliato. La risposta corretta è: ' + currentQuestionData.corretta;
+                feedbackText.className = 'feedback-incorrect';
+                selectedButton.classList.add('incorrect-feedback');
+                
+                // Evidenzia la risposta corretta (se l'utente ha sbagliato)
+                Array.from(optionsContainer.children).forEach(button => {
+                    if (button.textContent.trim() === currentQuestionData.corretta.trim()) {
+                         button.classList.add('correct-feedback');
+                    }
+                });
+            }
+
+            // 2. Disabilita tutti i pulsanti e abilita Successivo
             Array.from(optionsContainer.children).forEach(button => {
                 button.disabled = true;
-                button.classList.remove('correct', 'incorrect'); 
             });
-            nextButton.disabled = false; // Abilita il pulsante Successivo dopo la risposta
-
-            highlightSelectedOption(selectedOption);
-        }
-
-        function highlightSelectedOption(selectedOption) {
-            const question = quizData[currentQuestionIndex];
-            Array.from(optionsContainer.children).forEach(button => {
-                button.disabled = true; 
-                if (button.textContent === selectedOption) {
-                    if (selectedOption.trim() === question.corretta.trim()) {
-                        button.classList.add('correct');
-                    } else {
-                        button.classList.add('incorrect');
-                    }
-                }
-            });
+            nextButton.disabled = false;
         }
 
         function showResults() {
-            score = 0;
-            quizData.forEach(question => {
-                // Controlla se la risposta data è corretta
-                if (userAnswers[question.id] && userAnswers[question.id].trim() === question.corretta.trim()) {
-                    score++;
-                }
-            });
             resultsElement.innerHTML = `Hai risposto correttamente a ${score} domande su ${quizData.length}!`;
             
-            // Nasconde l'area del quiz e l'immagine
+            // Nasconde l'area del quiz e l'immagine del globo
             quizContent.style.display = 'none';
-            const globeImage = document.getElementById('globe-image');
             if(globeImage) globeImage.style.display = 'none';
         }
-
-        prevButton.addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                loadQuestion();
-            }
-        });
-
-        nextButton.addEventListener('click', () => {
-            if (currentQuestionIndex < quizData.length) { // Controlla anche l'ultimo passo
-                currentQuestionIndex++;
-                loadQuestion();
-            }
-        });
     </script>
 </body>
 </html>
