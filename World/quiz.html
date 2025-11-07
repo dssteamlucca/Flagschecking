@@ -3,372 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flags Checking - Domanda Casuale</title>
+    <title>World Edition - Flags Checking Quiz</title>
     <style>
+        /* CSS omesso per brevità, ma DEVE essere incluso */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            flex-direction: column;
         }
-        #quiz-container {
+        .container {
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
             max-width: 500px;
-            width: 100%;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        #card-header {
-            background-color: #DDEEFF; 
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            font-size: 14px;
             text-align: center;
+            margin-top: 20px;
         }
-        #question-text {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 25px;
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.1em;
             line-height: 1.4;
         }
-        .answer-button {
+        .options button {
             display: block;
             width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: none;
-            background-color: #f9f9f9;
-            cursor: pointer;
-            text-align: left;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.2s, color 0.2s;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        .answer-button:hover:not(:disabled) {
-            background-color: #e9e9e9;
-        }
-        #feedback {
-            margin-top: 25px;
             padding: 10px;
-            font-weight: bold;
-            font-size: 20px;
-            text-align: center;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
             border-radius: 5px;
+            background-color: #e0e0e0;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
         }
-        #next-button, #start-button, #reset-button, #reset-final-button {
-            display: block;
-            width: 100%;
-            padding: 15px;
+        .options button:hover {
+            background-color: #d0d0d0;
+            border-color: #ccc;
+        }
+        .options button.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #28a745;
+        }
+        .options button.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .options button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .navigation {
             margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .navigation button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
             background-color: #007bff;
             color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
+            font-size: 1em;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.3s;
         }
-        #next-button:hover, #start-button:hover, #reset-button:hover, #reset-final-button:hover {
+        .navigation button:hover {
             background-color: #0056b3;
         }
-        .correct-answer {
-            background-color: #d4edda !important; 
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .navigation button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
-        .incorrect-answer {
-            background-color: #f8d7da !important; 
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
+        #results {
+            margin-top: 20px;
+            font-size: 1.2em;
             font-weight: bold;
         }
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        #globe-image {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+            animation: rotateGlobe 10s infinite linear;
         }
-        /* Nascondi il contenuto del quiz all'inizio */
+        /* Nasconde l'area quiz fino all'avvio */
         #quiz-content {
-            display: none;
+            display: none; 
         }
-        #welcome-screen {
-            text-align: center;
+
+        @keyframes rotateGlobe {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
         }
     </style>
 </head>
 <body>
+    <img id="globe-image" src="globe.png" alt="Globo Terrestre">
 
-    <div id="quiz-container">
-        
-        <div id="welcome-screen">
-            <h1>Flags Checking Quiz - Palestina Edition</h1>
-            <div class="input-group">
-                <label for="playerName">Inserisci il tuo nome:</label>
-                <input type="text" id="playerName" placeholder="Nome team" maxlength="30">
-            </div>
-            <button id="start-button">Inizia la Partita</button>
-        </div>
-
-        <div id="quiz-content">
-            <div id="card-header"></div>
-            <p id="question-text"></p>
-
-            <div id="options-container">
-                <button type="button" class="answer-button" data-answer="A"></button>
-                <button type="button" class="answer-button" data-answer="B"></button>
-                <button type="button" class="answer-button" data-answer="C"></button>
-                <button type="button" class="answer-button" data-answer="D"></button>
-            </div>
+    <div class="container">
+        <h1>World Edition - Flags Checking Quiz</h1>
+        <div id="quiz-area">
             
-            <div id="feedback"></div>
-            <p id="progress-info" style="margin-top: 15px; text-align: center; font-size: 14px; color: #555;"></p>
-            <button id="next-button" style="display: none;">Prossima Domanda Casuale</button>
-            <button id="reset-button" style="background-color: #dc3545; margin-top: 10px; display: none;">Ricomincia Partita</button>
+            <div id="quiz-content" style="display: none;"> 
+                <div class="question" id="question-text"></div>
+                <div class="options" id="options-container"></div>
+                <div class="navigation">
+                    <button id="prev-btn" disabled>Precedente</button>
+                    <button id="next-btn" disabled>Successivo</button>
+                </div>
+            </div>
+
+            <button id="start-button">Inizia il gioco</button> 
+
+            <div id="results"></div>
         </div>
-        
-        <div id="results" style="margin-top: 20px; text-align: center; font-weight: bold;">Punteggio: 0 su 0</div>
-
     </div>
-    
-    <script src="quizData.js"></script> 
-    
+
+    <script src="quizData.js"></script>
     <script>
-        // =========================================================================
-        // Logica JavaScript del Quiz
-        // =========================================================================
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = {}; 
 
-        // Verifica se quizData è definito dal file quizData.js
-        if (typeof quizData === 'undefined') {
-            console.error("Errore: Il file quizData.js non è stato caricato correttamente o non contiene la variabile quizData.");
-        }
-
-        // Variabili di Stato
-        let askedQuestions = [];   // IDs delle domande già poste
-        let currentQuestion = null; // Domanda corrente
-        let score = 0;              // Punteggio totale
-        let totalAttempts = 0;      // Tentativi totali
-        let playerName = 'Giocatore';
-
-        // Riferimenti agli Elementi DOM
-        const welcomeScreen = document.getElementById('welcome-screen');
-        const quizContent = document.getElementById('quiz-content');
-        const startButton = document.getElementById('start-button');
-        const playerNameInput = document.getElementById('playerName');
-        const cardHeader = document.getElementById('card-header');
         const questionTextElement = document.getElementById('question-text');
-        // Riferimento corretto a tutti i pulsanti di risposta
-        const answerButtons = document.querySelectorAll('#options-container .answer-button'); 
-        const feedbackElement = document.getElementById('feedback');
-        const nextButton = document.getElementById('next-button');
-        const resetButton = document.getElementById('reset-button');
+        const optionsContainer = document.getElementById('options-container');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const startButton = document.getElementById('start-button');
+        const quizContent = document.getElementById('quiz-content');
         const resultsElement = document.getElementById('results');
 
-        // -------------------------------------------------------------------------
-        // 1. FUNZIONE DI INIZIALIZZAZIONE E AVVIO
-        // -------------------------------------------------------------------------
-
-        function initializeQuiz() {
-            // Nasconde il contenuto del quiz e mostra la schermata di benvenuto
-            quizContent.style.display = 'none';
-            welcomeScreen.style.display = 'block';
-            resultsElement.textContent = `Punteggio: 0 su 0`;
-            
-            // Resetta le variabili di stato
-            askedQuestions = [];
-            score = 0;
-            totalAttempts = 0;
-            
-            nextButton.style.display = 'none';
-            resetButton.style.display = 'none';
-            feedbackElement.textContent = '';
-            
-            // Ripristina l'HTML iniziale della welcome screen per evitare l'endGame
-            welcomeScreen.innerHTML = `
-                <h1>Flags Checking Quiz - Palestina Edition</h1>
-                <div class="input-group">
-                    <label for="playerName">Inserisci il nome della partita:</label>
-                    <input type="text" id="playerName" placeholder="Nome team" maxlength="30" value="${playerNameInput.value || ''}">
-                </div>
-                <button id="start-button">Inizia la Partita</button>
-            `;
-            // Riassegna l'evento al nuovo pulsante "Inizia la Partita"
-            document.getElementById('start-button').addEventListener('click', startQuiz);
-            
-            // Riassegna il riferimento all'input se necessario
-            // Nota: in questo caso non serve perché stiamo per ricaricare la pagina per un reset completo
+        // Controlla subito se i dati del quiz sono disponibili
+        if (typeof quizData === 'undefined' || quizData.length === 0) {
+            startButton.disabled = true;
+            startButton.textContent = 'Errore: Dati Quiz Mancanti!';
+            console.error("L'array quizData non è definito o è vuoto. Controlla quizData.js.");
         }
 
-        function startQuiz() {
-            // Rilegge il nome dal campo input che potrebbe essere stato ricreato/aggiornato
-            const currentNameInput = document.getElementById('playerName');
-            playerName = currentNameInput ? (currentNameInput.value.trim() || 'Giocatore') : 'Giocatore';
-            
-            if (playerName.length < 2) {
-                alert('Per favore, inserisci un nome valido di almeno 2 caratteri.');
-                return;
+        // Funzione di Avvio
+        startButton.addEventListener('click', () => {
+            if (quizData.length > 0) {
+                startButton.style.display = 'none'; // Nasconde il pulsante "Inizia il gioco"
+                quizContent.style.display = 'block'; // Mostra l'area del quiz
+                loadQuestion();
             }
+        });
 
-            // Passa alla schermata del quiz
-            welcomeScreen.style.display = 'none';
-            quizContent.style.display = 'block';
-            resetButton.style.display = 'block';
-            
-            loadNextQuestion();
-        }
-
-        // -------------------------------------------------------------------------
-        // 2. LOGICA DOMANDA
-        // -------------------------------------------------------------------------
-
-        function loadNextQuestion() {
-            // Filtra le domande non ancora poste
-            const availableQuestions = quizData.filter(q => !askedQuestions.includes(q.id));
-
-            if (availableQuestions.length === 0) {
-                endGame();
-                return;
-            }
-
-            // Sceglie una domanda casuale tra quelle disponibili
-            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-            currentQuestion = availableQuestions[randomIndex];
-
-            // Resetta l'interfaccia
-            feedbackElement.textContent = '';
-            nextButton.style.display = 'none';
-            
-            // Riabilita e resetta i pulsanti
-            answerButtons.forEach((button, index) => {
-                button.disabled = false;
-                button.classList.remove('correct-answer', 'incorrect-answer');
+        function loadQuestion() {
+            if (currentQuestionIndex < quizData.length) {
+                const question = quizData[currentQuestionIndex];
+                questionTextElement.textContent = `(${currentQuestionIndex + 1}/${quizData.length}) ${question.testo}`;
+                optionsContainer.innerHTML = '';
                 
-                // Assegna il testo della risposta
-                if (index < currentQuestion.opzioni.length) {
-                    button.textContent = currentQuestion.opzioni[index];
-                    button.style.display = 'block';
+                let answerGiven = !!userAnswers[question.id]; // true se l'utente ha già risposto
+
+                question.opzioni.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.onclick = () => selectOption(option);
+                    button.disabled = answerGiven; // Disabilita se già risposto
+                    optionsContainer.appendChild(button);
+                });
+
+                // Aggiorna testo e stato del pulsante Next
+                if (currentQuestionIndex === quizData.length - 1) {
+                    nextButton.textContent = 'Mostra Risultati';
                 } else {
-                    button.style.display = 'none'; // Nasconde se ci sono meno di 4 opzioni
+                    nextButton.textContent = 'Successivo';
                 }
-            });
 
-            // Aggiorna il testo e l'header
-            cardHeader.textContent = `Categoria: ${currentQuestion.categoria} | Livello: ${currentQuestion.difficoltà} | Domanda n. ${askedQuestions.length + 1}`;
-            questionTextElement.textContent = currentQuestion.testo;
-        }
+                // Abilita/Disabilita pulsante Precedente e Successivo
+                prevButton.disabled = currentQuestionIndex === 0;
+                nextButton.disabled = !answerGiven; 
 
-        // -------------------------------------------------------------------------
-        // 3. GESTIONE RISPOSTA
-        // -------------------------------------------------------------------------
-
-        function handleAnswer(event) {
-            // Previene l'azione se il pulsante è disabilitato
-            if (event.target.disabled) return; 
-
-            const selectedAnswer = event.target.getAttribute('data-answer');
-            const correctKey = currentQuestion.corretta;
-            
-            // Disabilita tutti i pulsanti di risposta
-            answerButtons.forEach(button => {
-                button.disabled = true;
-            });
-
-            totalAttempts++;
-            askedQuestions.push(currentQuestion.id);
-
-            if (selectedAnswer === correctKey) {
-                score++;
-                event.target.classList.add('correct-answer');
-                feedbackElement.textContent = `Corretto! 🎉`;
+                // Evidenzia la selezione utente se presente
+                if (answerGiven) {
+                    highlightSelectedOption(userAnswers[question.id]);
+                }
             } else {
-                event.target.classList.add('incorrect-answer');
-                // Evidenzia la risposta corretta
-                const correctButton = Array.from(answerButtons).find(btn => btn.getAttribute('data-answer') === correctKey);
-                if (correctButton) {
-                    correctButton.classList.add('correct-answer');
-                }
-                feedbackElement.textContent = `Sbagliato. La risposta corretta era ${correctKey}.`;
+                showResults();
             }
-            
-            // Aggiorna il punteggio e mostra il pulsante "Prossima"
-            resultsElement.textContent = `Punteggio: ${score} su ${totalAttempts}`;
-            nextButton.style.display = 'block';
         }
 
+        function selectOption(selectedOption) {
+            const question = quizData[currentQuestionIndex];
+            userAnswers[question.id] = selectedOption; 
 
-        // -------------------------------------------------------------------------
-        // 4. FINE PARTITA
-        // -------------------------------------------------------------------------
+            // Disabilita tutti i bottoni dopo la selezione e abilita Successivo
+            Array.from(optionsContainer.children).forEach(button => {
+                button.disabled = true;
+                button.classList.remove('correct', 'incorrect'); 
+            });
+            nextButton.disabled = false; // Abilita il pulsante Successivo dopo la risposta
 
-        function endGame() {
-            quizContent.style.display = 'none';
-            // Non mostra la welcome screen per non sovrascrivere i risultati
-            welcomeScreen.style.display = 'block'; 
+            highlightSelectedOption(selectedOption);
+        }
 
-            let finalMessage = `Partita Terminata, ${playerName}! 🏁\n`;
-            finalMessage += `Hai risposto a tutte le domande disponibili (${totalAttempts}).\n`;
-            
-            let percentage = (totalAttempts > 0) ? ((score / totalAttempts) * 100).toFixed(1) : 0;
-            finalMessage += `Punteggio Finale: ${score} su ${totalAttempts} (${percentage}%)`;
-            
-            // Sostituisce il contenuto della welcome screen con il risultato finale
-            welcomeScreen.innerHTML = `
-                <h1>Risultati Finali</h1>
-                <p style="font-size: 1.2em; white-space: pre-line;">${finalMessage}</p>
-                <button id="reset-final-button">Ricomincia</button>
-            `;
-            
-            // Riassegna l'evento al nuovo pulsante "Ricomincia"
-            document.getElementById('reset-final-button').addEventListener('click', () => {
-                // Un semplice ricaricamento di pagina è il modo più pulito per resettare l'intero stato
-                window.location.reload(); 
+        function highlightSelectedOption(selectedOption) {
+            const question = quizData[currentQuestionIndex];
+            Array.from(optionsContainer.children).forEach(button => {
+                button.disabled = true; 
+                if (button.textContent === selectedOption) {
+                    if (selectedOption.trim() === question.corretta.trim()) {
+                        button.classList.add('correct');
+                    } else {
+                        button.classList.add('incorrect');
+                    }
+                }
             });
         }
 
+        function showResults() {
+            score = 0;
+            quizData.forEach(question => {
+                // Controlla se la risposta data è corretta
+                if (userAnswers[question.id] && userAnswers[question.id].trim() === question.corretta.trim()) {
+                    score++;
+                }
+            });
+            resultsElement.innerHTML = `Hai risposto correttamente a ${score} domande su ${quizData.length}!`;
+            
+            // Nasconde l'area del quiz e l'immagine
+            quizContent.style.display = 'none';
+            const globeImage = document.getElementById('globe-image');
+            if(globeImage) globeImage.style.display = 'none';
+        }
 
-        // -------------------------------------------------------------------------
-        // 5. LISTENER DI EVENTI
-        // -------------------------------------------------------------------------
-
-        // Avvio della partita (gestito nel window.onload in initializeQuiz)
-        startButton.addEventListener('click', startQuiz);
-
-        // Passaggio alla domanda successiva
-        nextButton.addEventListener('click', loadNextQuestion);
-
-        // Reset / Ricomincia
-        resetButton.addEventListener('click', () => {
-             // Un semplice ricaricamento di pagina è il modo più pulito
-             window.location.reload(); 
+        prevButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
         });
 
-        // Gestione click sui pulsanti di risposta
-        answerButtons.forEach(button => {
-            button.addEventListener('click', handleAnswer);
+        nextButton.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length) { // Controlla anche l'ultimo passo
+                currentQuestionIndex++;
+                loadQuestion();
+            }
         });
-
-
-        // -------------------------------------------------------------------------
-        // 6. AVVIO INIZIALE
-        // -------------------------------------------------------------------------
-
-        // Avvia l'interfaccia iniziale al caricamento della pagina
-        window.onload = initializeQuiz;
     </script>
 </body>
 </html>
