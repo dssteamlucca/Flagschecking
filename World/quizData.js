@@ -115,3 +115,4 @@ const quizData = [
     { id: 99, categoria: "Africa & Oceania", testo: "Il blu della bandiera di Figi (Oceania) simboleggia l'Oceano Pacifico.", opzioni: ["Vero", "Falso"], corretta: "Vero" },
     { id: 100, categoria: "Africa & Oceania", testo: "La bandiera del Marocco (Africa) presenta una stella a sei punte verde chiamata 'Sigillo di Salomone'.", opzioni: ["Vero", "Falso"], corretta: "Falso" }
 ];
+
