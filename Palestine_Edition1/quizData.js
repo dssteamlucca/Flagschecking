@@ -24,22 +24,144 @@ const quizData = [
     { id: 23, categoria: "Bandiera I", difficoltà: "Media", testo: "Quale forma geometrica, di colore rosso, si trova sul lato dell'asta della bandiera palestinese?", opzioni: ["A) Un quadrato", "B) Un cerchio", "C) Un rettangolo", "D) Un triangolo"], corretta: "D" },
     { id: 24, categoria: "Bandiera I", difficoltà: "Media", testo: "Il design della bandiera palestinese si basa direttamente su quale vessillo storico che rappresentava l'unità araba?", opzioni: ["A) Califfato Omayyade", "B) La bandiera della Rivolta Araba", "C) Mandato Britannico", "D) OLP originale"], corretta: "B" },
     { id: 25, categoria: "Bandiera I", difficoltà: "Facile", testo: "Qual è il significato del colore nero nella bandiera palestinese?", opzioni: ["A) La purezza e la pace", "B) L'oppressione", "C) La fertilità", "D) L'Islam e la fede"], corretta: "B" },
-    { id: 26, categoria: "Bandiera I", difficoltà: "Media", testo: "Cosa rappresenta il disco rosso (il *Hinomaru*) al centro della bandiera nazionale del Giappone?", opzioni: ["A) La Luna Piena", "B) L'illuminazione buddhista", "C) Il Sole nascente", "D) Un antico stemma imperiale"], corretta: "C" },
-    { id: 27, categoria: "Bandiera I", difficoltà: "Difficile", testo: "La *Union Jack* del Regno Unito è la combinazione delle croci di quali tre santi patroni?", opzioni: ["A) San Pietro, San Marco, San Matteo", "B) San Giorgio, San Davide, San Patrizio", "C) San Giorgio, San Daniele, San Andrea", "D) San Giorgio, Sant'Andrea, San Patrizio"], corretta: "D" },
-    { id: 28, categoria: "Bandiera II", difficoltà: "Difficile", testo: "Qual è il nome della ruota (o Chakra) blu con 24 raggi che si trova al centro della striscia bianca della bandiera dell'India?", opzioni: ["A) Dharma Sutra", "B) Om Mani Padme Hum", "C) Ashoka Chakra", "D) Guna Tattva"], corretta: "C" },
-    { id: 29, categoria: "Bandiera II", difficoltà: "Difficile", testo: "Qual è l'ordine corretto dei colori della bandiera nazionale della Germania (dall'alto verso il basso)?", opzioni: ["A) Rosso, Oro, Nero", "B) Nero, Rosso, Oro", "C) Oro, Rosso, Nero", "D) Nero, Giallo, Rosso"], corretta: "B" },
-    { id: 30, categoria: "Bandiera II", difficoltà: "Difficile", testo: "Perché la bandiera nazionale del Nepal è unica tra le bandiere di tutte le nazioni sovrane del mondo?", opzioni: ["A) È l'unica ad essere interamente verde", "B) Ha due pennoni triangolari sovrapposti.", "C) È l'unica ad avere un drago", "D) È interamente bianca"], corretta: "B" },
-    { id: 31, categoria: "Bandiera II", difficoltà: "Facile", testo: "Quale colore del *Tricolore* italiano è tradizionalmente associato alla speranza?", opzioni: ["A) Rosso", "B) Bianco", "C) Azzurro", "D) Verde"], corretta: "D" },
-    { id: 32, categoria: "Bandiera II", difficoltà: "Media", testo: "Quante stelle sono rappresentate sulla bandiera nazionale della Repubblica Popolare Cinese?", opzioni: ["A) Una (grande)", "B) Tre (una grande e due piccole)", "C) Cinque (una grande e quattro piccole)", "D) Quattordici"], corretta: "C" },
-    { id: 33, categoria: "Bandiera II", difficoltà: "Media", testo: "La bandiera della Svezia (e di tutte le nazioni nordiche) utilizza un disegno noto come:", opzioni: ["A) Croce di Sant'Andrea", "B) Croce nordica", "C) Croce di San Giorgio", "D) Croce latina"], corretta: "B" },
-    { id: 34, categoria: "Bandiera II", difficoltà: "Difficoltà", testo: "Qual è il nome del simbolo centrale, il cerchio diviso in rosso e blu, che si trova sulla bandiera della Corea del Sud?", opzioni: ["A) Taegeuk", "B) Gweon", "C) Hanja", "D) Mugunghwa"], corretta: "A" },
-    { id: 35, categoria: "Bandiera II", difficoltà: "Media", testo: "I colori della bandiera della Francia risalgono a quale evento storico?", opzioni: ["A) La fondazione della Quinta Repubblica", "B) La campagna di Napoleone", "C) La Rivoluzione francese", "D) Le Crociate medievali"], corretta: "C" },
-    { id: 36, categoria: "Bandiera II", difficoltà: "Media", testo: "Quale combinazione di simboli si trova sulla bandiera della Turchia?", opzioni: ["A) Leone e Scudo", "B) Sole e Mezzaluna", "C) Mezzaluna e Stella", "D) Aquila a due teste"], corretta: "C" },
-    { id: 37, categoria: "Bandiera III", difficoltà: "Media", testo: "Le nove strisce orizzontali bianche e blu alternate sulla bandiera della Grecia simboleggiano tradizionalmente:", opzioni: ["A) Le nove divinità elleniche", "B) Le nove regioni geografiche", "C) Le nove sillabe del motto nazionale", "D) I nove anni della principale guerra"], corretta: "C" },
-    { id: 38, categoria: "Bandiera III", difficoltà: "Facile", testo: "Quale elemento rende unica la bandiera dell'Arabia Saudita rispetto alla maggior parte delle bandiere nazionali?", opzioni: ["A) Contiene una scritta in arabo che la rende non reversibile.", "B) È l'unica bandiera interamente verde", "C) Ha una forma pentagonale", "D) Contiene un ritratto del sovrano"], corretta: "A" },
-    { id: 39, categoria: "Bandiera III", difficoltà: "Media", testo: "Qual è la forma inusuale della bandiera nazionale della Svizzera?", opzioni: ["A) Trapezoidale", "B) Quadrata", "C) Rettangolare con croce decentrata", "D) Rettangolare con proporzioni 1:3"], corretta: "B" },
-    { id: 40, categoria: "Bandiera III", difficoltà: "Media", testo: "Qual è il significato della stella gialla al centro della bandiera rossa del Vietnam?", opzioni: ["A) La stella polare", "B) La leadership del Partito Comunista", "C) Il riso", "D) L'unità con la Cina"], corretta: "B" },
-    { id: 41, categoria: "Geografia III", difficoltà: "Difficile", testo: "Which major city in the West Bank is famous for the Cave of the Patriarchs (Ibrahimi Mosque) and is located in the southern hills?", opzioni: ["A) Ramallah", "B) Nablus", "C) Hebron", "D) Jenin"], corretta: "C" },
+    
+{ 
+        id: 26, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Da quale bandiera storica la Bandiera della Palestina trae direttamente ispirazione, con la combinazione di colori panarabi?", 
+        opzioni: ["A) La Bandiera del Califfato Ottomano", "B) La Bandiera della Rivolta Araba", "C) La Bandiera del Regno d'Egitto", "D) La Bandiera della Lega Araba"], 
+        corretta: "B"
+  
+    },
+    { 
+        id: 27, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Quale organizzazione ha adottato ufficialmente questa bandiera nel 1964, rendendola il simbolo del popolo palestinese?", 
+        opzioni: ["A) L'Autorità Palestinese (ANP)", "B) Il Movimento di Liberazione Nazionale Palestinese (Fatah)", "C) L'Organizzazione per la Liberazione della Palestina (OLP)", "D) Il Consiglio Nazionale Palestinese (CNP)"], 
+        corretta: "C" 
+  
+    },
+    { 
+        id: 28, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Chi è accreditato di aver disegnato la bandiera originale della Rivolta Araba, che è il modello per la bandiera palestinese moderna?", 
+        opzioni: ["A) Yasser Arafat", "B) Sharif Hussein bin Ali", "C) Haj Amin al-Husseini", "D) Faisal I dell'Iraq"], 
+        corretta: "B"
+  
+    },
+    { 
+        id: 29, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Cosa simboleggia il triangolo rosso nella bandiera della Palestina?", 
+        opzioni: ["A) Il Coraggio del popolo palestinese", "B) La Dinastia Fatimide e Gerusalemme", "C) Il sangue versato per l'indipendenza e la dinastia hashemita", "D) L'Unità dei quattro popoli arabi principali"], 
+        corretta: "C" 
+  
+    },
+    { 
+        id: 30, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Quale dei quattro colori panarabi sulla bandiera è tradizionalmente associato al Califfato Omayyade?", 
+        opzioni: ["A) Il Verde", "B) Il Nero", "C) Il Rosso", "D) Il Bianco"], 
+        corretta: "D" 
+  
+    },
+    { 
+        id: 31, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "A quale Califfato è tradizionalmente associato il colore Nero, la striscia superiore della bandiera palestinese?", 
+        opzioni: ["A) Il Califfato Omayyade", "B) Il Califfato Abbaside", "C) Il Califfato Fatimide", "D) Il Sultanato Ayyubide"], 
+        corretta: "B"
+  
+    },
+    { 
+        id: 32, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Quando è stata presentata per la prima volta la bandiera (nella sua forma originale della Rivolta Araba) al mondo?", 
+        opzioni: ["A) 1948", "B) 1920", "C) 1916", "D) 1905"], 
+        corretta: "C" 
+  
+    },
+    { 
+        id: 33, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Cosa simboleggia il verde, la striscia inferiore della bandiera, secondo la simbologia panaraba?", 
+        opzioni: ["A) Il Mar Mediterraneo e il cielo", "B) La Ricchezza mineraria del sottosuolo", "C) L'Esercito per la Liberazione della Palestina (ELP)", "D) La dinastia Fatimide e la prosperità del suolo"], 
+        corretta: "D"
+  
+    },
+    { 
+        id: 34, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "In quale periodo storico la bandiera palestinese fu temporaneamente vietata dalle autorità militari israeliane nei Territori Palestinesi?", 
+        opzioni: ["A) Durante la Guerra del Kippur (1973)", "B) Durante gli anni della Prima Intifada (1987-1993)", "C) Immediatamente dopo la Guerra dei Sei Giorni (1967)", "D) Durante il Mandato Britannico (1920-1948)"], 
+        corretta: "B" 
+  
+    },
+    { 
+        id: 35, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Quale importante accordo internazionale nel 1993 portò all'uso pubblico della bandiera palestinese da parte dell'Autorità Palestinese?", 
+        opzioni: ["A) Il Vertice di Camp David", "B) Gli Accordi di pace tra Giordania e Israele", "C) La Conferenza di Madrid", "D) Gli Accordi di Oslo"], 
+        corretta: "D" 
+  
+    },
+    { 
+        id: 36, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Qual è l'ordine corretto delle strisce orizzontali sulla bandiera della Palestina, partendo dall'alto?", 
+        opzioni: ["A) Verde, Bianco, Nero", "B) Nero, Bianco, Verde", "C) Bianco, Nero, Verde", "D) Nero, Verde, Bianco"], 
+        corretta: "B"
+  
+    },
+    { 
+        id: 37, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Quale altra bandiera moderna ha utilizzato la combinazione esatta dei colori panarabi e il triangolo rosso, basandosi anch'essa sulla bandiera della Rivolta Araba?", 
+        opzioni: ["A) La bandiera dell'Iraq", "B) La bandiera dell'Egitto", "C) La bandiera della Siria", "D) La bandiera della Giordania"], 
+        corretta: "D"
+  
+    },
+    { 
+        id: 38, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Come viene definito l'attuale status della bandiera palestinese presso le Nazioni Unite dal 2015?", 
+        opzioni: ["A) Bandiera di uno stato membro fondatore", "B) Bandiera di uno stato membro a pieno titolo", "C) Bandiera di osservatore non membro", "D) Bandiera di un territorio amministrato fiduciariamente"], 
+        corretta: "C"
+  
+    },
+    { 
+        id: 39, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "In quale anno la bandiera della Palestina è stata innalzata per la prima volta a New York presso la sede delle Nazioni Unite?", 
+        opzioni: ["A) 1993", "B) 2012", "C) 2015", "D) 2000"], 
+        corretta: "C" 
+  
+    },
+    { 
+        id: 40, 
+        categoria: "Storia Palestina", 
+        difficoltà: "Media", 
+        testo: "Durante il periodo del Mandato Britannico, quale bandiera veniva ufficialmente utilizzata in Palestina?", 
+        opzioni: ["A) La bandiera palestinese attuale (OLP)", "B) Una bandiera bianca con una Stella di David blu", "C) L'Union Jack britannica con un badge", "D) La bandiera panaraba con un simbolo locale"], 
+        corretta: "C"
+  
+    },
+
+ { id: 41, categoria: "Geografia III", difficoltà: "Difficile", testo: "Which major city in the West Bank is famous for the Cave of the Patriarchs (Ibrahimi Mosque) and is located in the southern hills?", opzioni: ["A) Ramallah", "B) Nablus", "C) Hebron", "D) Jenin"], corretta: "C" },
     { id: 42, categoria: "Geografia III", difficoltà: "Difficile", testo: "What is the official name, in English, for the Palestinian coastal territory situated along the Mediterranean Sea?", opzioni: ["A) The Western Coast", "B) The Gaza Shore", "C) The Gaza Strip", "D) The Mediterranean Exclave"], corretta: "C" },
     { id: 43, categoria: "Bandiera IV", difficoltà: "Difficile", testo: "Which color in the Palestinian flag symbolizes the Umayyad Caliphate and a period of Arab glory and resilience?", opzioni: ["A) Red", "B) White", "C) Black", "D) Green"], corretta: "C" },
     { id: 44, categoria: "Geografia III", difficoltà: "Difficile", testo: "The Palestinian city of Ramallah serves as the *de facto* administrative capital and is generally located in which part of the West Bank?", opzioni: ["A) North", "B) Central", "C) South", "D) East"], corretta: "B" },
@@ -69,10 +191,10 @@ const quizData = [
     { id: 68, categoria: "Storia V", difficoltà: "Media", testo: "Gli Accordi di Oslo (1993 e 1995) hanno portato alla creazione di quale organo di autogoverno palestinese?", opzioni: ["A) Il Consiglio Legislativo Palestinese", "B) L'Organizzazione per la Liberazione della Palestina", "C) La Lega Araba", "D) L'Autorità Nazionale Palestinese (ANP)"], corretta: "D" },
     { id: 69, categoria: "Storia V", difficoltà: "Media", testo: "Quale città della Palestina fu il luogo in cui nacque la Seconda Intifada (Intifada di Al-Aqsa) nell'anno 2000?", opzioni: ["A) Ramallah", "B) Gaza City", "C) Gerusalemme (Monte del Tempio/Haram al-Sharif)", "D) Hebron"], corretta: "C" },
     { id: 70, categoria: "Storia V", difficoltà: "Difficile", testo: "Il 'disimpegno' unilaterale di Israele, che portò allo smantellamento degli insediamenti e al ritiro delle forze militari dalla Striscia di Gaza, avvenne in quale anno?", opzioni: ["A) 1995", "B) 2000", "C) 2005", "D) 2007"], corretta: "C" },
-	{ id: 71, categoria: "Geografia VI", difficoltà: "Media", testo: "Which UNESCO World Heritage site in the West Bank is known for its ancient agricultural terraces and irrigation systems?", opzioni: ["A) Old City of Nablus", "B) Battir (Land of Olives and Vines)", "C) Hisham's Palace, Jericho", "D) Herodion Fortress"], corretta: "B" },
+	{ id: 71, categoria: "Geografia VI", difficoltà: "Media", testo: "Which UNESCO World Heritage site in the West Bank is known for its ancient agricultural terraces and irrigation systems?", opzioni: ["A) Old City of Nablus", "B) Battir", "C) Hisham's Palace, Jericho", "D) Herodion Fortress"], corretta: "B" },
     { id: 72, categoria: "Storia VI", difficoltà: "Difficile", testo: "Which two major Palestinian cities in the West Bank were declared a single 'Area A' enclave under the 1995 Oslo II Accord?", opzioni: ["A) Hebron and Bethlehem", "B) Jenin and Tulkarm", "C) Ramallah and Jericho", "D) Nablus and Jenin"], corretta: "D" },
     { id: 73, categoria: "Bandiera V", difficoltà: "Media", testo: "What is the common name for the four colors (Black, White, Green, Red) shared by the flags of Palestine, Jordan, Kuwait, and other Arab nations?", opzioni: ["A) Unity Colors", "B) Ottoman Hues", "C) Pan-Arab Colors", "D) Levant Colors"], corretta: "C" },
-    { id: 74, categoria: "Geografia VI", difficoltà: "Media", testo: "The area designated as Area C under the Oslo Accords is generally controlled by which administration?", opzioni: ["A) Palestinian Authority (PA)", "B) United Nations", "C) Israeli Civil Administration and Military", "D) Joint Security Forces"], corretta: "C" },
+    { id: 74, categoria: "Geografia VI", difficoltà: "Media", testo: "The area designated as Area C under the Oslo Accords is generally controlled by which administration?", opzioni: ["A) Palestinian Authority (PA)", "B) United Nations", "C) Israeli Civil Administration", "D) Joint Security Forces"], corretta: "C" },
     { id: 75, categoria: "Storia VI", difficoltà: "Difficile", testo: "The *Fatah* political faction, a founding member of the PLO, was established by which prominent Palestinian leader?", opzioni: ["A) Mahmoud Abbas", "B) Yasser Arafat", "C) Hafez al-Assad", "D) Sheikh Ahmed Yassin"], corretta: "B" },
     { id: 76, categoria: "Bandiera V", difficoltà: "Difficile", testo: "Which color in the Palestinian flag specifically represents the Arab Fatimid Caliphate of North Africa?", opzioni: ["A) Red Triangle", "B) Black Stripe", "C) White Stripe", "D) Green Stripe"], corretta: "C" },
     { id: 77, categoria: "Geografia VI", difficoltà: "Media", testo: "Which Palestinian city is considered the commercial and transportation hub of the northern West Bank (Samaria)?", opzioni: ["A) Ramallah", "B) Hebron", "C) Nablus", "D) Jericho"], corretta: "C" },
