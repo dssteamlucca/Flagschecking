@@ -38,46 +38,38 @@
 
         .link-item {
             text-decoration: none;
-            color: #333;
-            transition: transform 0.3s ease;
+            padding: 30px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            min-width: 200px;
         }
 
         .link-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .gif-container {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid #ddd;
-            margin-bottom: 15px;
-            transition: border-color 0.3s ease;
-        }
-
-        .link-item:hover .gif-container {
+            transform: translateY(-5px);
             border-color: #007bff;
+            background: #e3f2fd;
         }
 
-        .gif-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            display: block;
         }
 
         .link-text {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #333;
         }
 
-        .world-link:hover .link-text {
-            color: #007bff;
+        .world-link .icon {
+            color: #1e88e5;
         }
 
-        .palestine-link:hover .link-text {
-            color: #007bff;
+        .palestine-link .icon {
+            color: #000000;
         }
     </style>
 </head>
@@ -87,18 +79,14 @@
         
         <div class="links-container">
             <!-- Link World -->
-            <a href="https://dssteamlucca.github.io/Flagschecking/World/" class="link-item world-link" target="_blank">
-                <div class="gif-container">
-                    <img src="https://media.giphy.com/media/h408T41Zv6TkI/giphy.gif" alt="Pianeta Terra">
-                </div>
+            <a href="https://dssteamlucca.github.io/Flagschecking/world" class="link-item world-link" target="_blank">
+                <span class="icon">🌍</span>
                 <div class="link-text">World</div>
             </a>
 
             <!-- Link Palestine -->
-            <a href="https://dssteamlucca.github.io/Flagschecking/Palestine_Edition1/" class="link-item palestine-link" target="_blank">
-                <div class="gif-container">
-                    <img src="https://media.giphy.com/media/l4FGnTWu2hsVbzVUY/giphy.gif" alt="Bandiera Palestina">
-                </div>
+            <a href="https://dssteamlucca.github.io/Flagschecking/Palestine_edition1/" class="link-item palestine-link" target="_blank">
+                <span class="icon">🇵🇸</span>
                 <div class="link-text">Palestine Edition 1</div>
             </a>
         </div>
