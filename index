@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleziona Versione</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .links-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .link-item {
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+
+        .link-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .gif-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #ddd;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .link-item:hover .gif-container {
+            border-color: #007bff;
+        }
+
+        .gif-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .link-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .world-link:hover .link-text {
+            color: #007bff;
+        }
+
+        .palestine-link:hover .link-text {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Seleziona la Versione</h1>
+        
+        <div class="links-container">
+            <!-- Link World -->
+            <a href="https://dssteamlucca.github.io/Flagschecking/World/" class="link-item world-link" target="_blank">
+                <div class="gif-container">
+                    <img src="https://media.giphy.com/media/h408T41Zv6TkI/giphy.gif" alt="Pianeta Terra">
+                </div>
+                <div class="link-text">World</div>
+            </a>
+
+            <!-- Link Palestine -->
+            <a href="https://dssteamlucca.github.io/Flagschecking/Palestine_Edition1/" class="link-item palestine-link" target="_blank">
+                <div class="gif-container">
+                    <img src="https://media.giphy.com/media/l4FGnTWu2hsVbzVUY/giphy.gif" alt="Bandiera Palestina">
+                </div>
+                <div class="link-text">Palestine Edition 1</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
