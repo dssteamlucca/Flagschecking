@@ -260,13 +260,13 @@
             
             if (isCorrect) {
                 // Aggiunge l'emoji al messaggio di risposta esatta
-                feedbackText.textContent = `Risposta esatta! ${flagEmoji}`;
+                feedbackText.textContent = `Correct answer! ${flagEmoji}`;
                 feedbackText.className = 'feedback-correct';
                 score++;
                 selectedButton.classList.add('correct-feedback');
             } else {
                 // Aggiunge l'emoji al messaggio di risposta sbagliata
-                feedbackText.textContent = `Sbagliato. La risposta corretta è: ${currentQuestionData.corretta} ${flagEmoji}`;
+                feedbackText.textContent = `Wrong! The correct answer is: ${currentQuestionData.corretta} ${flagEmoji}`;
                 feedbackText.className = 'feedback-incorrect';
                 selectedButton.classList.add('incorrect-feedback');
                 
